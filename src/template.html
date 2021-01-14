@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./styles/main.css">
+    <style>
+        .main-inner {
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .centered {
+            text-align: center
+        }
+
+        input.invalid {
+            background-color: #ffdddd;
+        }
+
+        .tab {
+            display: none;
+        }
+
+        .step {
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #000;
+            border: none;
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.5;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        .step.finish {
+            background-color: #4CAF50;
+        }
+
+        .cat-icon {
+            width: 20px;
+            height: 20px;
+            background-color: royalblue;
+        }
+
+        .reg-category {
+            border: 2px solid #757575;
+            padding-left: 1rem;
+            margin-bottom: 0.5rem;
+            background-color: rgba(243, 243, 243, 0.5);
+        }
+
+        #expenses-cat {
+            display: none;
+        }
+
+        #income-link, #expenses-link {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="main-inner">
+            <div class="container bg-warning w-25 mx-auto">
+                <form id = "regForm" action="">
+                    <div class="tab py-2">
+                        <h2 class="centered">Hi! My name is SmartSpend</h2>
+                        <h2 class="centered">What is your name?</h2>
+                        <div class="tab__inputs-inner mt-5">
+                            <p class="centered"><input type="text" id="fName" class = "regInput" placeholder="First name..." ></p>
+                            <p class="centered"><input type="text" id="lName" class = "regInput" placeholder="Last name..."></p>
+                        </div>
+                    </div>
+                    <div class="tab py-2">
+                        <h2 class="centered">Let's create a new wallet</h2>
+                        <h2 class="centered">Enter name of your first wallet</h2>
+                        <div class="tab__inputs-inner mt-5">
+                            <p class="centered"><input type="text" id="wallet-name" class = "regInput" placeholder="Wallet name..."></p>
+                        </div>
+                    </div>
+                    <div class="tab py-2">
+                        <h2 class="centered">Enter initial balance</h2>
+                        <div class="tab__inputs-inner my-5">
+                            <p class="centered">
+                                <input type="number" id="walletBalance" class = "regInput" placeholder="Wallet balance...">
+                                <select name="currency" id="currency-select">
+                                    <option class="curr-name" value="USD" id="USD">USD</option>
+                                    <option class="curr-name" value="RUB" id="RUB">RUB</option>
+                                    <option class="curr-name" value="KZT" id="KZT">KZT</option>
+                                </select>
+
+                            </p>
+                        </div>
+                    </div>
+                    <div class="tab py-2">
+                        <h2 class="centered">Choose categories</h2>
+                        <div class="tab__inputs-inner mt-5">
+                           <div class="row">
+                            <div class="col-6 centered">
+                                <a id="income-link">INCOME</a>   
+                            </div>
+                            <div class="col-6 centered">
+                                <a id="expenses-link">EXPENSES</a> 
+                            </div>
+                           </div>
+                           <div class="row mt-4">
+                            <div id="income-cat" class="col">
+                                <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat1" name="income-cat" value="salary">
+                                   <label for="income-cat1" class = "ml-2">
+                                       <img src="assets/images/salary_icon.svg" class="cat-icon" alt="">
+                                       <span>Salary</span>
+                                   </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat2" name="income-cat" value="business">
+                                   <label for="incomes-cat2" class = "ml-2">
+                                    <img src="assets/images/business_icon.svg" class="cat-icon" alt="">
+                                    <span>Business</span>
+                                </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat3" name="income-cat" value="gifts">
+                                   <label for="income-cat3" class = "ml-2">
+                                    <img src="assets/images/gifts_icon.svg" class="cat-icon" alt="">
+                                    <span>Gifts</span>
+                                </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat4" name="income-cat" value="extra-income">
+                                    <label for="income-cat4" class = "ml-2">
+                                     <img src="assets/images/entertainment_icon.svg" class="cat-icon" alt="">
+                                     <span>Extra income</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat5" name="income-cat" value="loan">
+                                    <label for="income-cat5" class = "ml-2">
+                                     <img src="assets/images/loan_icon.svg" class="cat-icon" alt="">
+                                     <span>Loan</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat6" name="income-cat" value="parental">
+                                   <label for="income-cat6" class = "ml-2">
+                                    <img src="assets/images/parental_icon.svg" class="cat-icon" alt="">
+                                    <span>Parental Leave</span>
+                                </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat7" name="income-cat" value="insurance">
+                                    <label for="income-cat7" class = "ml-2">
+                                     <img src="assets/images/insurance_icon.svg" class="cat-icon" alt="">
+                                     <span>Insurance Payout</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat8" name="income-cat" value="other">
+                                    <label for="income-cat8" class = "ml-2">
+                                     <img src="assets/images/other_icon.svg" class="cat-icon" alt="">
+                                     <span>Other</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="income-cat9" name="income-cat" value="bonus">
+                                    <label for="income-cat9" class = "ml-2">
+                                     <img src="assets/images/healthcare_icon.svg" class="cat-icon" alt="">
+                                     <span>Bonus</span>
+                                 </label>
+                                   </div>
+                               </div>
+                               <div id="expenses-cat" class="col">
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="expenses-cat1" name="expenses-cat" value="beauty">
+                                   <label for="expenses-cat1" class = "ml-2">
+                                       <img src="assets/images/beauty_icon.svg" class="cat-icon" alt="">
+                                       <span>Beauty</span>
+                                   </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="expenses-cat2" name="expenses-cat" value="car">
+                                   <label for="expenses-cat2" class = "ml-2">
+                                    <img src="assets/images/car_icon.svg" class="cat-icon" alt="">
+                                    <span>Car</span>
+                                </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" class = "reg-cat-checkbox" id="expenses-cat3" name="expenses-cat" value="education">
+                                   <label for="expenses-cat3" class = "ml-2">
+                                    <img src="assets/images/study_icon.svg" class="cat-icon" alt="">
+                                    <span>Education</span>
+                                </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" id="expenses-cat4" class = "reg-cat-checkbox" name="expenses-cat" value="entertainment">
+                                    <label for="expenses-cat4" class = "ml-2">
+                                     <img src="assets/images/entertainment_icon.svg" class="cat-icon" alt="">
+                                     <span>Entertainment</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" id="expenses-cat5" class = "reg-cat-checkbox" name="expenses-cat" value="family&pers">
+                                    <label for="expenses-cat5" class = "ml-2">
+                                     <img src="assets/images/person_icon.svg" class="cat-icon" alt="">
+                                     <span>Family&Personal</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" id="expenses-cat6" class = "reg-cat-checkbox" name="expenses-cat" value="food&drink">
+                                   <label for="expenses-cat6" class = "ml-2">
+                                    <img src="assets/images/food_icon.svg" class="cat-icon" alt="">
+                                    <span>Food&Drink</span>
+                                </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" id="expenses-cat7" class = "reg-cat-checkbox" name="expenses-cat" value="gifts">
+                                    <label for="expenses-cat7" class = "ml-2">
+                                     <img src="assets/images/gifts_icon.svg" class="cat-icon" alt="">
+                                     <span>Gifts</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" id="expenses-cat8" class = "reg-cat-checkbox" name="expenses-cat" value="groceries">
+                                    <label for="expenses-cat8" class = "ml-2">
+                                     <img src="assets/images/gifts_icon.svg" class="cat-icon" alt="">
+                                     <span>Groceries</span>
+                                 </label>
+                                   </div>
+                                   <div class="reg-category">
+                                    <input type="checkbox" id="expenses-cat9" class = "reg-cat-checkbox" name="expenses-cat" value="healtcare">
+                                    <label for="expenses-cat9" class = "ml-2">
+                                     <img src="assets/images/healthcare_icon.svg" class="cat-icon" alt="">
+                                     <span>Healthcare</span>
+                                 </label>
+                                   </div>
+                               </div>
+                           </div> 
+                        </div>
+                    </div>
+                    <div class="text-right">
+                          <button type="button" id="prevBtn">Previous</button>
+                          <button type="button" id="nextBtn">Next</button>
+                    </div>
+
+                    <div style="text-align:center;margin-top:40px;">
+                        <span class="step"></span>
+                        <span class="step"></span>
+                        <span class="step"></span>
+                        <span class="step"></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
