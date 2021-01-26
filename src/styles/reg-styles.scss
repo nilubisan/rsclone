@@ -1,0 +1,56 @@
+.reg-main {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.centered {
+    text-align: center
+}
+
+input.invalid {
+    background-color: #ffdddd;
+}
+
+.reg-tab {
+    display: none;
+}
+
+.reg-step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #000;
+    border: none;
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.reg-step.active {
+    opacity: 1;
+}
+
+.step.finish {
+    background-color: #4CAF50;
+}
+
+.cat-icon {
+    width: 20px;
+    height: 20px;
+    background-color: royalblue;
+    margin-right: 10px;
+}
+
+.category-item {
+    border: 2px solid #757575;
+    padding-left: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: rgba(243, 243, 243, 0.5);
+}
+
+
+#income-link, #expenses-link {
+    cursor: pointer;
+}

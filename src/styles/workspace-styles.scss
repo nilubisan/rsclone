@@ -1,0 +1,308 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color:  #f4f7fa;
+}
+
+.header {
+    background-color: #fff;
+}
+
+.header-inner {
+    
+}
+
+.logo {
+    text-align: left;
+}
+
+
+.main-container {
+
+    padding: 0;
+
+}
+
+.main-section {
+    margin-top: 40px;
+}
+
+.view-toggles {
+    
+}
+
+.user-info {
+    text-align: right;
+}
+
+.view-toggles-btn {
+    
+}
+
+.view-toggles-btn:last-child {
+    margin-right: 0;
+}
+
+.wallets-inner {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 0 1 auto;
+    flex-direction: row;
+    margin: 0 -0.5rem;
+}
+
+.wallets-section {
+    
+}
+
+.main-section-title {
+    
+}
+
+
+.wallet-inner {
+    display: flex;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.wallet-add-sec {
+    background-color: #f4f7fa;
+    flex-direction: column;
+    padding: 0;
+}
+
+.wallet-body {
+    max-width: 25%;
+    flex-basis: 25%;
+}
+
+.new-wallet-btn {
+    outline: none;
+    border: none;
+    background-color: #d2d5d8;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    text-align: center;
+    height: 108px;
+}
+
+.new-wallet-link span {
+    vertical-align: bottom;
+}
+
+.new-wallet-link:last-child {
+    margin-bottom: 0;
+}
+
+.wallet-logo {
+    position: relative;
+    width: 22px;
+    margin-right: 1rem;
+}
+
+.wallet-logo img {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+}
+
+.wallet-type {
+    font-size: 0.8rem;
+    color: rgb(128, 128, 128)
+}
+
+.wallet-balance {
+    color: #51ff00;
+    font-size: 1.2rem;
+}
+
+.analytics-subsection {
+    margin-bottom: 30px;
+}
+
+
+.date-control-inner {
+    display: flex;
+}
+
+.toggle-date {
+    background:   #fff no-repeat center center;
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+}
+
+.toggle-date-left {
+    background-image: url("../images/arrow-left.svg");
+    margin-right: 10px;
+}
+
+.toggle-date-right {
+    background-image: url("../images/arrow-right.svg");
+    margin-left: 10px;
+} 
+
+.selected-date-inner {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+    background-color: #fff;
+    border-radius: 8px;
+    line-height: 35px;
+    padding: 0 0.8rem;
+}
+
+.selected-date {
+    
+}
+
+.selected-date-img {
+    width: 35px;
+    height: 35px;
+    background: url("../images/calendar.svg") no-repeat center;
+}
+
+
+
+.filter-cta {
+    text-align: right;
+}
+
+
+.filter-inner {
+    display: flex;
+    flex-direction: column;
+}
+
+.no-operation {
+    flex-direction: column;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.no-operation-pic {
+    width: 130px;
+    height: 130px;
+    background: url("../images/no-operation.png") no-repeat;
+    margin: 0 auto;
+}
+
+.no-operation-text {
+    display: inline-block;
+    margin-top: 30px;
+    opacity: 0.5;
+}
+
+.indexes {
+    display: flex;
+    background-color:  #f4f7fa;
+    margin-top: 30px;
+
+}
+
+.index-inner {
+    flex-basis: 25%;
+    max-width: 25%;
+}
+
+.index {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+}
+
+
+.chart-inner {
+    
+}
+
+
+.wallet-btn-icon {
+margin-right: 15px;
+}
+
+.charts {
+    margin-bottom: 30px;
+}
+
+.chart {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.chart-heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.period-toggles {
+    text-align: right;
+}
+
+
+.period-toggle {
+    display: inline-block;
+    border: 1px solid gray;
+    padding: 5px;
+}
+
+
+.chart-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popup {
+    position: fixed;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    border: 1px solid #000;
+    width: 30%;
+    padding: 10px;
+    max-width: 300px;
+    background-color: #fff;
+    border-radius: 30px;
+    transition: 200ms ease;
+}
+
+.popup.active {
+    transform: translate(-50%,-50%) scale(1);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 15px;
+
+}
+
+.popup-body {
+    padding: 10px 15px;
+}
+
+#overlay {
+    position: fixed;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    pointer-events: none;
+}
+
+#overlay.active {
+    pointer-events: all;
+    opacity: 1;
+}
