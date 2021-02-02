@@ -122,90 +122,9 @@ export default class Registration
             if(ind === 3) {
                 const mainWrapper = renderCategoriesSelectModule(incomeCategories, expensesCategories, "checkbox");
                 tab.appendChild(mainWrapper);
-
-            /*    const heading = document.createElement("h2");
-                heading.classList.add("centered");
-                heading.textContent = "Choose categories";
-                const wrapper = document.createElement("div");
-                wrapper.classList.add("reg-tab__inputs-inner");
-                wrapper.classList.add("mt-5");
-                const row1 = document.createElement("div");
-                row1.classList.add("row");
-                const col1 = document.createElement("div");
-                col1.classList.add("col-6");
-                col1.classList.add("centered");
-                const toggleLink1 = document.createElement("a");
-                toggleLink1.id = "reg-income-link";
-                toggleLink1.textContent = "INCOME";
-                const col2 = document.createElement("div");
-                col2.classList.add("col-6");
-                col2.classList.add("centered");
-                const toggleLink2 = document.createElement("a");
-                toggleLink2.id = "reg-expenses-link";
-                toggleLink2.textContent = "EXPENSES";
-
-                col1.appendChild(toggleLink1);
-                col2.appendChild(toggleLink2);
-                row1.appendChild(col1);
-                row1.appendChild(col2);
-                wrapper.appendChild(row1);
-
-                const row2 = document.createElement("div");
-                row2.classList.add("row");
-                row2.classList.add("mt-4");
-                const incomeCatWrapper = document.createElement("div");
-                incomeCatWrapper.id = "reg-income-cat";
-                incomeCatWrapper.classList.add("col");
-
-                for(let i = 0; i < incomeCategories.length; i++) {
-                   const catItem = createCategoryEl(incomeCategories[i], "income", (i+1));
-                   incomeCatWrapper.appendChild(catItem);
-                }
-
-                const expensesCatWrapper = document.createElement("div");
-                expensesCatWrapper.id = "reg-expenses-cat";
-                expensesCatWrapper.classList.add("col");
-
-                for(let i = 0; i < expensesCategories.length; i++) {
-                   const catItem = createCategoryEl(expensesCategories[i], "expenses", (i+1));
-                   expensesCatWrapper.appendChild(catItem);
-                }
-
-                row2.appendChild(incomeCatWrapper);
-                row2.appendChild(expensesCatWrapper);
-                wrapper.appendChild(row2);
-                tab.appendChild(heading);
-                tab.appendChild(wrapper); */
                 
             } 
         }
-
-      /*  function createCategoryEl(catName, catType, ind) {
-            const regCat = document.createElement("div");
-            regCat.classList.add("category-item");
-            const checkBox = document.createElement("input");
-            checkBox.setAttribute("type", "checkbox");
-            checkBox.setAttribute("name", `${catType}-cat`);
-            checkBox.setAttribute("value", catName);
-            checkBox.classList.add("reg-cat-checkbox");
-            checkBox.id = `${catType}-cat${ind}`;
-
-            const label = document.createElement("label");
-            label.setAttribute("for", checkBox.id);
-            label.classList.add("ml-2");
-            const ico = new Image();
-            ico.src = `assets/images/${catName}_icon.svg`;
-            ico.classList.add("reg-cat-icon");
-            const catTitle = document.createElement("span");
-            catTitle.textContent = catName;
-
-            label.appendChild(ico);
-            label.appendChild(catTitle);
-            regCat.appendChild(checkBox);
-            regCat.appendChild(label);
-            return regCat;
-
-        } */
 
         const incomeCategories = [
             "salary",
@@ -338,12 +257,12 @@ export default class Registration
             const regForm = document.querySelector("#reg-form");
             regForm.dispatchEvent(new Event('submit'));
             localStorage.setItem("isRegUser", "true");
+            this.writeInLStorage(this.walletName, "creationData", new Date());
             document.querySelector("#app").innerHTML = "";
             new Workspace(this.mainWrapper);
             return;
         }
-        this.showTab(this.currentTab);
-        
+        this.showTab(this.currentTab);  
     }
 
     fixStepIndicator(n) {
@@ -367,18 +286,6 @@ export default class Registration
             this.steps[this.currentTab].className += " finish";
         }
         return valid;
-    }
-
-    toggleRegCategories(operationType) {
-        const incomeRegCat = document.querySelector("#income-cat");
-        const expensesRegCat = document.querySelector("#expenses-cat");
-        if (operationType === "expenses") {
-            incomeRegCat.style.display = "none";
-            expensesRegCat.style.display = "block";
-        } else if (operationType === "income") {
-            expensesRegCat.style.display = "none";
-            incomeRegCat.style.display = "block";
-        }
     }
 
     writeInLStorage(lSPropName, ourPropName, value, isArray=false) {
@@ -405,22 +312,15 @@ export default class Registration
             this.makeStep("forward");
         }.bind(this));
 
-        // Set handlers to category-list toggles
-        const expensesRegLink = document.querySelector("#expenses-link");
-        expensesRegLink.addEventListener("click", function(){ 
-            this.toggleRegCategories("expenses")
-        }.bind(this));
-        const incomeRegLink = document.querySelector("#income-link");
-        incomeRegLink.addEventListener("click", function(){ 
-            this.toggleRegCategories("income")
-        }.bind(this));
-
         // Save entered data in LocalStorage for <input type = "text">
         const regInputs = document.querySelectorAll(".reg-input");
         for(let i = 0; i < regInputs.length; i++) {
             regInputs[i].addEventListener("keyup", function(e) {
                 if(regInputs[i].id === "wallet-name") return;
-                if(regInputs[i].id === "walletBalance") this.writeInLStorage(this.walletName, regInputs[i].id, regInputs[i].value);
+                if(regInputs[i].id === "walletBalance") {
+                    this.writeInLStorage(this.walletName, regInputs[i].id, regInputs[i].value);
+                    this.writeInLStorage(this.walletName, "initialBalance", regInputs[i].value);
+                }
                 else localStorage.setItem(regInputs[i].id, regInputs[i].value); 
             }.bind(this))
         }

@@ -14,6 +14,13 @@ body {
     
 }
 
+.header-userpic {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
 .logo {
     text-align: left;
 }
@@ -29,12 +36,37 @@ body {
     margin-top: 40px;
 }
 
-.view-toggles {
-    
+
+
+.header-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.user-info {
-    text-align: right;
+.header-user-menu {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+
+
+.header-dropdown {
+    display: none;
+    position: absolute;
+    background-color: rebeccapurple;
+}
+
+.header-arrow-btn {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("../images/header-arrow.svg");
+    transform: rotate(90deg);
+    margin-left: 30px;
+    cursor: pointer;
+
 }
 
 .view-toggles-btn {
@@ -216,6 +248,7 @@ body {
     display: flex;
     flex-direction: column;
     border-radius: 8px;
+    padding: 10px;
 }
 
 
@@ -228,20 +261,64 @@ body {
 margin-right: 15px;
 }
 
+.charts-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
 .charts {
     margin-bottom: 30px;
 }
 
-.chart {
-    background-color: #fff;
+
+.chart-wrapper {
     border-radius: 8px;
-    width: 100%;
+}
+
+.chart-header {
+    background-color: #fff;
+    margin: 0;
+}
+
+.chart-title {
+    margin: 0;
+    font-size: 1.5rem;
+    padding: 5px;
+    text-align: center;
 }
 
 .chart-heading {
     display: flex;
     flex-direction: column;
 }
+
+.chart-list-inner {
+    background-color: #fff;
+    padding: 5px;
+}
+
+.chart-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chart-list-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.chart-list-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    
+}
+
+
+
 
 .period-toggles {
     text-align: right;
@@ -267,9 +344,9 @@ margin-right: 15px;
     left: 50%;
     transform: translate(-50%,-50%) scale(0);
     border: 1px solid #000;
-    width: 30%;
-    padding: 10px;
-    max-width: 300px;
+    width: 40%;
+    padding: 30px;
+    max-width: 400px;
     background-color: #fff;
     border-radius: 30px;
     transition: 200ms ease;
@@ -306,3 +383,9 @@ margin-right: 15px;
     pointer-events: all;
     opacity: 1;
 }
+
+.new-oper-success {
+    text-align: center;
+    margin: 40px 0;
+}
+

@@ -29,6 +29,9 @@ export default function renderCategoriesSelectModule(incomeCategoriesArr, expens
     toggleLink1.id = "income-link";                   // ПЕРЕКЛЮЧАТЕЛЬ МЕЖДУ ТИПАМИ КАТЕГОРИЙ (INCOME)
     toggleLink1.textContent = "INCOME";                                         
     col1.appendChild(toggleLink1);
+    toggleLink1.addEventListener("click", function(){ 
+        toggleNewOperCategories("income")
+    });
 
     const col2 = document.createElement("div");
     col2.classList.add("col-6", "centered");           // СЕТКА БУТСТРАП row1-col2
@@ -38,6 +41,9 @@ export default function renderCategoriesSelectModule(incomeCategoriesArr, expens
     toggleLink2.id = "expenses-link";
     toggleLink2.textContent = "EXPENSES";             // ПЕРЕКЛЮЧАТЕЛЬ МЕЖДУ ТИПАМИ КАТЕГОРИЙ (EXPENSES)
     col2.appendChild(toggleLink2);
+    toggleLink2.addEventListener("click", function(){ 
+        toggleNewOperCategories("expenses")
+    });
     
     const row2 = document.createElement("div");
     row2.classList.add("row");                          // СЕТКА БУТСТРАП row2
@@ -89,7 +95,7 @@ function createCategoryEl(catName, catType, inputType, ind) {
     input.setAttribute("name", `${catType}-cat`);
     input.setAttribute("value", catName);
     input.classList.add("cat-input");
-    input.id = `${catType}-cat${ind}`;
+  //  input.id = `${catType}-cat${ind}`;
     category.appendChild(input);
 
     const label = document.createElement("label");
@@ -107,4 +113,17 @@ function createCategoryEl(catName, catType, inputType, ind) {
     label.appendChild(catTitle);
     
     return category;
+}
+
+// ФУНКЦИЯ - ПЕРЕКЛЮЧАТЕЛЬ КАТЕГОРИЙ
+function toggleNewOperCategories(operationType) {
+    const incomeCat = document.querySelector("#income-cat");
+    const expensesCat = document.querySelector("#expenses-cat");
+    if (operationType === "expenses") {
+        incomeCat.style.display = "none";
+        expensesCat.style.display = "block";
+    } else if (operationType === "income") {
+        expensesCat.style.display = "none";
+        incomeCat.style.display = "block";
+    }
 }

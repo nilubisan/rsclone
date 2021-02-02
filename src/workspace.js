@@ -3,6 +3,9 @@ export default class Workspace {
     constructor(app) {
         this.mainWrapper = app;
         this.totalWealth = 0;
+        this.cashFlow = 0;
+        this.totalIncome = 0;
+        this.totalExpenses = 0;
         this.init();
     }
 
@@ -15,7 +18,7 @@ export default class Workspace {
     retrieveDataFromStorage() {
         const fName = localStorage.getItem("fName");
         const lName = localStorage.getItem("lName");
-        this.userName = `${fName} ${lName}`;
+        this.userName = fName;
         this.walletsNames = [];
         this.walletsItems = {};
         const wallets = JSON.parse(localStorage.getItem("wallet-name"));
@@ -37,11 +40,32 @@ export default class Workspace {
             })
             this.walletsItems[importedWalletName].incomeCategories = incomeCategories;
             this.walletsItems[importedWalletName].expensesCategories =  expensesCategories;
-            this.totalWealth = (+this.totalWealth) + (+wallet.walletBalance);
+            this.totalWealth = (+wallet.walletBalance);
             this.currency = wallet.currency;
             this.currentWalletName = this.walletsNames[0];
             console.log(this.walletsItems[importedWalletName]);
         });
+        if(localStorage.getItem("is-cash-flow")) {
+            this.isCashFlow = true;
+            if(localStorage.getItem("expensesData")) {
+                let expData = JSON.parse(localStorage.getItem("expensesData"));
+                for(const[key,value] of Object.entries(expData)) {
+    
+                    this.totalExpenses += (+value.totalSum);
+                    
+                }
+            }
+
+            if(localStorage.getItem("incomeData")) {
+            let incomeData = JSON.parse(localStorage.getItem("incomeData"));
+            for(const[key,value] of Object.entries(incomeData)) {
+                this.totalIncome += (+value.totalSum);
+                console.log(this.totalIncome);
+            }
+
+            this.cashFlow = this.totalIncome - this.totalExpenses;
+        }
+        }
     }
 
     renderWorkspace() {
@@ -56,28 +80,57 @@ export default class Workspace {
     renderHeader() {
         const header = document.createElement("header");
         header.classList.add("header", "container-fluid");
+
         const headerInner = document.createElement("div");
         headerInner.classList.add("header-inner", "row", "py-4");
+        header.appendChild(headerInner);
+
         const headerLogoWrapper = document.createElement("div");
         headerLogoWrapper.classList.add("header-logo", "col-4");
+        headerInner.appendChild(headerLogoWrapper);
+
         const headerLogo = new Image();
         headerLogo.src = "assets/images/logo.svg";
         headerLogoWrapper.appendChild(headerLogo);
-        headerInner.appendChild(headerLogoWrapper);
+
         const viewToggles = document.createElement("div");
         viewToggles.classList.add("view-toggles", "col-4", "d-flex", "justify-content-center");
-        const viewTogglesBtn1 = document.createElement("a");
+        const viewTogglesBtn1 = document.createElement("span");
         viewTogglesBtn1.classList.add("view-toggles-btn", "mr-4");
         viewTogglesBtn1.textContent = "Main Panel";
         viewToggles.appendChild(viewTogglesBtn1);
         headerInner.appendChild(viewToggles);
-        const userInfo = document.createElement("div");
-        userInfo.classList.add("user-info", "header-items", "col-4");
-        const userName = document.createElement("a");
+
+        const headerRight = document.createElement("div");
+        headerRight.classList.add("header-right", "col-4");
+        headerInner.appendChild(headerRight);
+
+
+        const headerUserMenu = document.createElement("div");
+        headerUserMenu.classList.add("header-user-menu");
+        headerRight.appendChild(headerUserMenu);
+
+        const userPic = new Image();
+        userPic.classList.add("header-userpic");
+        userPic.src = "assets/images/userpic.png";
+        headerUserMenu.appendChild(userPic);
+
+        const userName = document.createElement("span");
         userName.textContent = this.userName;
-        userInfo.appendChild(userName);
-        headerInner.appendChild(userInfo);
-        header.appendChild(headerInner);
+        headerUserMenu.appendChild(userName);
+        
+        const arrowBtn = document.createElement("span");
+        arrowBtn.classList.add("header-arrow-btn");
+        headerUserMenu.appendChild(arrowBtn);
+        
+        const headerDropdown = document.createElement("div");
+        headerDropdown.classList.add("header-dropdown");
+        headerRight.appendChild(headerDropdown);
+
+        const headerDropdownContent = document.createElement("span");
+        headerDropdownContent.textContent = "Hello";
+        headerDropdown.appendChild(headerDropdownContent);
+
         return header;
     }
 
@@ -291,50 +344,334 @@ export default class Workspace {
             const wrapper = document.createElement("div");
             wrapper.classList.add("indexes", "row");
             wrapper.appendChild(createIndex("Total wealth", totalWealth, "total-wealth"));
-            wrapper.appendChild(createIndex("Cash flow for the period", "0", "cash-flow"));
-            wrapper.appendChild(createIndex("Total expenses for the period", "0", "total-expenses"));
-            wrapper.appendChild(createIndex("Total income for the period", "0", "total-income"));
+            wrapper.appendChild(createIndex("Cash flow for the period", cashFlow, "cash-flow"));
+            wrapper.appendChild(createIndex("Total expenses for the period", totalExpenses, "total-expenses"));
+            wrapper.appendChild(createIndex("Total income for the period", totalIncome, "total-income"));
             mainWrapper.appendChild(wrapper);
             return mainWrapper;
         }
+        
+        
     
         function createCharts() {
-            function createChart(name, period) {
-                const mainWrapper = document.createElement("div");
-                mainWrapper.classList.add("chart-inner", "col-6");
-                const wrapper = document.createElement("div");
-                wrapper.classList.add("chart");
-                const chartHeader = document.createElement("div");
-                chartHeader.classList.add("chart-top", "row");
-                const chartHeading = document.createElement("div");
-                chartHeading.classList.add("chart-heading", "col-6");
-                const chartName = document.createElement("span");
-                chartName.classList.add("chart-name");
-                chartName.textContent = name;
-                const chartCurrPeriod = document.createElement("span");
-                chartCurrPeriod.classList.add("chart-current-period");
-                chartCurrPeriod.textContent = period;
-                chartHeading.appendChild(chartName);
-                chartHeading.appendChild(chartCurrPeriod);
-                chartHeader.appendChild(chartHeading);
-                wrapper.appendChild(chartHeader);
-                mainWrapper.appendChild(wrapper);
-                return mainWrapper;
-            }
-    
+
             const mainWrapper = document.createElement("div");
             mainWrapper.classList.add("analytics-subsection");
-            const wrapper1 = document.createElement("div");
-            wrapper1.classList.add("charts", "row");
-            wrapper1.appendChild(createChart("The balance of account", "January 01-31"));
-            wrapper1.appendChild(createChart("Cash flow", "January 01-31"));
-            const wrapper2 = document.createElement("div");
-            wrapper2.classList.add("charts", "row");
-            wrapper2.appendChild(createChart("Income for the period", "January 01-31"));
-            wrapper2.appendChild(createChart("Expenses for the period", "January 01-31"));
-            mainWrapper.appendChild(wrapper1);
-            mainWrapper.appendChild(wrapper2);
+
+            const row1 = document.createElement("div");
+            row1.classList.add("charts-row", "row");
+            mainWrapper.appendChild(row1);
+
+            if(localStorage.getItem("is-cash-flow")) {
+                const totalWealthChartWrapper = document.createElement("div");
+                totalWealthChartWrapper.classList.add("chart-wrapper", "col-6")
+                row1.appendChild(totalWealthChartWrapper);
+    
+                const totalWealthChartHeader = document.createElement("div");
+                totalWealthChartHeader.classList.add("chart-header");
+                totalWealthChartWrapper.appendChild(totalWealthChartHeader);
+    
+                const totalWealthChartTitle = document.createElement("h2");
+                totalWealthChartTitle.classList.add("chart-title");
+                totalWealthChartTitle.textContent = "Total wealth";
+                totalWealthChartHeader.appendChild(totalWealthChartTitle);
+    
+                const totalWealthChart = document.createElement("div");
+                totalWealthChart.classList.add("chart-body");
+                totalWealthChart.id = "totalwealth-area-chart";
+                totalWealthChartWrapper.appendChild(totalWealthChart);
+            }
+
+            if(localStorage.getItem("cashFlowByDate")) {
+                const cashFlowChartWrapper = document.createElement("div");
+                cashFlowChartWrapper.classList.add("chart-wrapper", "col-6")
+                row1.appendChild(cashFlowChartWrapper);
+    
+                const cashFlowChartHeader = document.createElement("div");
+                cashFlowChartHeader.classList.add("chart-header");
+                cashFlowChartWrapper.appendChild(cashFlowChartHeader);
+    
+                const cashFlowChartTitle = document.createElement("h2");
+                cashFlowChartTitle.classList.add("chart-title");
+                cashFlowChartTitle.textContent = "Cash flow";
+                cashFlowChartHeader.appendChild(cashFlowChartTitle);
+    
+                const cashFlowChart = document.createElement("div");
+                cashFlowChart.classList.add("chart-body");
+                cashFlowChart.id = "cashflow-chart-pie";
+                cashFlowChartWrapper.appendChild(cashFlowChart);
+            }
+
+            const row2 = document.createElement("div");
+            row2.classList.add("charts-row", "row");
+            mainWrapper.appendChild(row2);
+
+            if(localStorage.getItem("incomeData")) {
+                const incomeChartWrapper = document.createElement("div");
+                incomeChartWrapper.classList.add("chart-wrapper", "col-6")
+                row2.appendChild(incomeChartWrapper);
+    
+                const incomeChartHeader = document.createElement("div");
+                incomeChartHeader.classList.add("chart-header");
+                incomeChartWrapper.appendChild(incomeChartHeader);
+
+                const incomeChartTitle = document.createElement("h2");
+                incomeChartTitle.classList.add("chart-title");
+                incomeChartTitle.textContent = "Total income";
+                incomeChartHeader.appendChild(incomeChartTitle);
+    
+                const incomeChart = document.createElement("div");
+                incomeChart.classList.add("chart-body");
+                incomeChart.id = "income-chart-pie";
+                incomeChartWrapper.appendChild(incomeChart);
+    
+                const incomeChartListInner = document.createElement("div");
+                incomeChartListInner.classList.add("chart-list-inner");
+                incomeChartListInner.appendChild(drawIncomeList());
+                incomeChartWrapper.appendChild(incomeChartListInner);
+            }
+
+            if(localStorage.getItem("expensesData")) {
+                const expensesChartWrapper = document.createElement("div");
+                expensesChartWrapper.classList.add("chart-wrapper", "col-6")
+                row2.appendChild(expensesChartWrapper);
+    
+                const expensesChartHeader = document.createElement("div");
+                expensesChartHeader.classList.add("chart-header");
+                expensesChartWrapper.appendChild(expensesChartHeader);
+    
+                const expensesChartTitle = document.createElement("h2");
+                expensesChartTitle.classList.add("chart-title");
+                expensesChartTitle.textContent = "Total expenses";
+                expensesChartHeader.appendChild(expensesChartTitle);
+    
+                const expensesChart = document.createElement("div");
+                expensesChart.classList.add("chart-body");
+                expensesChart.id = "expenses-chart-pie";
+                expensesChartWrapper.appendChild(expensesChart);
+    
+                const expensesChartListInner = document.createElement("div");
+                expensesChartListInner.classList.add("chart-list-inner");
+                expensesChartListInner.appendChild(drawExpensesList());
+                expensesChartWrapper.appendChild(expensesChartListInner);
+
+            }
+
             return mainWrapper;
+        }
+        if(localStorage.getItem("incomeData")) google.charts.setOnLoadCallback(drawIncomeChart);
+        if(localStorage.getItem("expensesData")) google.charts.setOnLoadCallback(drawExpensesChart);
+        if(localStorage.getItem("cashFlowByDate")) google.charts.setOnLoadCallback(drawCashFlowChart);
+        if(localStorage.getItem("cashFlowByDate")) google.charts.setOnLoadCallback(drawTotalWealthChart);
+        
+
+        function drawIncomeChart() {
+            let data = new google.visualization.DataTable();
+            data.addColumn('string', 'Element');
+            data.addColumn('number', 'Percentage');
+            const incomeData = JSON.parse(localStorage.getItem("incomeData"));
+            let arr = [];
+            for(const[key, value] of Object.entries(incomeData)) {
+                arr.push([key,value.totalSum]);
+            }
+            data.addRows(arr);
+            let options = {
+                animation: {
+                    duration: 10000,
+                    startup: true
+                },
+            }
+
+            let chart = new google.visualization.PieChart(document.getElementById('income-chart-pie'));
+            chart.draw(data, options);
+        }
+
+        function drawExpensesChart() {
+            let data = new google.visualization.DataTable();
+            data.addColumn('string', 'Element');
+            data.addColumn('number', 'Percentage');
+            const expensesData = JSON.parse(localStorage.getItem("expensesData"));
+            let arr = [];
+            for(const[key, value] of Object.entries(expensesData)) {
+                arr.push([key,value.totalSum]);
+            }
+            data.addRows(arr);
+            let options = {
+
+            }
+            let chart = new google.visualization.PieChart(document.getElementById('expenses-chart-pie'));
+            chart.draw(data, options);
+        }
+
+        function drawCashFlowChart() {
+            let date = new Date();
+            let currentMonth = date.getMonth();
+            let currentYear = date.getFullYear();
+            let daysInMonth = new Date(date.getFullYear(), (date.getMonth() + 1), 0).getDate();
+            let arr = [];
+            const cashFlowByDate = JSON.parse(localStorage.getItem("cashFlowByDate"));
+
+            let data = new google.visualization.DataTable();
+            data.addColumn('date', 'Day');
+            data.addColumn('number', 'Income');
+            data.addColumn('number', 'Expenses');
+            for(let i = 1; i <= daysInMonth; i++) {
+                let incomeForPeriod = 0;
+                let expensesForPeriod = 0;
+                const date = `${i}-${currentMonth}-${currentYear}`;
+                if(cashFlowByDate[date]) {
+
+                    if(cashFlowByDate[date].income) incomeForPeriod = cashFlowByDate[date].income;
+                    if(cashFlowByDate[date].expenses) expensesForPeriod = cashFlowByDate[date].expenses;
+                }
+                arr.push([new Date(currentYear, currentMonth, i), incomeForPeriod, expensesForPeriod]);
+            }
+
+
+            data.addRows(arr);
+            let options = {
+                animation: {
+                    duration: 800,
+                    startup: true
+                },
+                vAxis: {
+                    format: "currency",
+                },
+                hAxis: {
+                    gridlines: {
+                        units: {
+                            months: {
+                                format: ['MMM']
+                            }
+                        }
+
+                    }
+                },
+                chartArea:{
+                    width:'60%'
+                }
+            }
+            let chart = new google.visualization.ColumnChart(document.getElementById('cashflow-chart-pie'));
+            chart.draw(data, options);
+        }
+
+        function drawTotalWealthChart() {
+            let date = new Date();
+            let currentMonth = date.getMonth();
+            let currentYear = date.getFullYear();
+            let daysInMonth = new Date(date.getFullYear(), (date.getMonth() + 1), 0).getDate();
+
+            let arr = [];
+
+            const cashFlowByDate = JSON.parse(localStorage.getItem("cashFlowByDate"));
+
+            let data = new google.visualization.DataTable();
+            data.addColumn('date', 'Day');
+            data.addColumn('number', 'Total wealth');
+            let totalWealthOnDate;
+            for(let i = 1; i <= daysInMonth; i++) {
+                
+                const date = `${i}-${currentMonth}-${currentYear}`;
+                if(cashFlowByDate[date]) {
+                    totalWealthOnDate = cashFlowByDate[date].totalWealth;
+                    arr.push([new Date(currentYear, currentMonth, i), totalWealthOnDate]);
+                }
+                if(i === daysInMonth) {
+                    arr.push([new Date(currentYear, currentMonth, i), totalWealthOnDate]);
+                }
+            }
+            data.addRows(arr);
+            let options = {
+                animation: {
+                    duration: 800,
+                    startup: true
+                },
+                legend: {
+                    position: "none"
+                }
+            }
+            let chart = new google.visualization.AreaChart(document.getElementById('totalwealth-area-chart'));
+            chart.draw(data, options);
+        }
+
+        function drawIncomeList() {
+            let list = document.createElement("ul");
+            list.classList.add("chart-list");
+
+            const incomeData = JSON.parse(localStorage.getItem("incomeData"));
+            for(const[key,value] of Object.entries(incomeData)) {
+                const listItem = document.createElement("li");
+                listItem.classList.add("chart-list-item");
+                list.appendChild(listItem);
+
+                const listItemTitle = document.createElement("div");
+                listItemTitle.classList.add("chart-list-title");
+                listItem.appendChild(listItemTitle);
+
+                const listItemIcon = document.createElement("span");
+                listItemIcon.classList.add("chart-list-icon");
+                const icoUrl = `assets/images/${key}_icon.svg`;
+                listItemIcon.style.background = `url(${icoUrl}) royalblue center`;
+                listItemTitle.appendChild(listItemIcon);
+
+                const listItemName = document.createElement("span");
+                listItemName.classList.add("chart-list-name");
+                listItemName.textContent = key;
+                listItemTitle.appendChild(listItemName);
+
+                const listAmountCounter = document.createElement("span");
+                listAmountCounter.classList.add("chart-list-amount");
+                let listAmountWord = value.operationsAmount > 1 ? "transactions" : "transaction";
+                listAmountCounter.textContent = `${value.operationsAmount} ${listAmountWord}`;
+                listItem.appendChild(listAmountCounter);
+
+                const listSum = document.createElement("span");
+                listSum.classList.add("chart-list-sum");
+                listSum.textContent = value.totalSum;
+                listItem.appendChild(listSum);
+            }
+
+            return list;
+        }
+
+        function drawExpensesList() {
+            let list = document.createElement("ul");
+            list.classList.add("chart-list");
+
+            const expensesData = JSON.parse(localStorage.getItem("expensesData"));
+            for(const[key,value] of Object.entries(expensesData)) {
+                const listItem = document.createElement("li");
+                listItem.classList.add("chart-list-item");
+                list.appendChild(listItem);
+
+                const listItemTitle = document.createElement("div");
+                listItemTitle.classList.add("chart-list-title");
+                listItem.appendChild(listItemTitle);
+
+                const listItemIcon = document.createElement("span");
+                listItemIcon.classList.add("chart-list-icon");
+                const icoUrl = `assets/images/${key}_icon.svg`;
+                listItemIcon.style.background = `url(${icoUrl}) royalblue center`;
+                listItemTitle.appendChild(listItemIcon);
+
+                const listItemName = document.createElement("span");
+                listItemName.classList.add("chart-list-name");
+                listItemName.textContent = key;
+                listItemTitle.appendChild(listItemName);
+
+                const listAmountCounter = document.createElement("span");
+                listAmountCounter.classList.add("chart-list-amount");
+                let listAmountWord = value.operationsAmount > 1 ? "transactions" : "transaction";
+                listAmountCounter.textContent = `${value.operationsAmount} ${listAmountWord}`;
+                listItem.appendChild(listAmountCounter);
+
+                const listSum = document.createElement("span");
+                listSum.classList.add("chart-list-sum");
+                listSum.textContent = value.totalSum;
+                listItem.appendChild(listSum);
+            }
+
+            return list;
         }
 
         function createNoOperationBackg() {
@@ -355,12 +692,15 @@ export default class Workspace {
         analyticsWrapper.id = "analytics";
         const analyticsTitle = document.createElement("h2");
         analyticsTitle.classList.add("main-section-title");
-        analyticsTitle.textContent = "Analytics";
+        analyticsTitle.textContent = "Review";
         analyticsWrapper.appendChild(analyticsTitle);
-        analyticsWrapper.appendChild(createAnalyticsDateToggle());
-        if(this.isCashFlow) analyticsWrapper.appendChild(createAnalyticsFilters());
+      //  analyticsWrapper.appendChild(createAnalyticsDateToggle());
+     //   if(this.isCashFlow) analyticsWrapper.appendChild(createAnalyticsFilters());
         const totalWealth = `${this.totalWealth} ${this.currency}`;
-        analyticsWrapper.appendChild(createDataIndexes(totalWealth, this.cashFlow, this.totalExpenses, this.totalIncome));
+        const cashFlow = `${this.cashFlow} ${this.currency}`;
+        const totalExpenses = `${this.totalExpenses} ${this.currency}`;
+        const totalIncome = `${this.totalIncome} ${this.currency}`;
+        analyticsWrapper.appendChild(createDataIndexes(totalWealth, cashFlow, totalExpenses, totalIncome));
         if(this.isCashFlow) {
             analyticsWrapper.appendChild(createCharts());
         }
@@ -370,7 +710,7 @@ export default class Workspace {
         return analyticsWrapper;
     }
 
-    renderPopup() {
+    renderPopup(popupId, popupBod) {
         const popup = document.createElement("div");
         popup.classList.add("popup");
         popup.id = "popup";
@@ -387,8 +727,9 @@ export default class Workspace {
         popupHeader.appendChild(closeBtn);
         const incomeCatArr = this.walletsItems[this.currentWalletName].incomeCategories;
         const expensesCatArr = this.walletsItems[this.currentWalletName].expensesCategories;
-        const popupBody = renderCategoriesSelectModule(incomeCatArr,expensesCatArr, "radio", true);
+        const popupBody = this.createNewOperationModContent(incomeCatArr, expensesCatArr, this);
         popup.appendChild(popupBody);
+
         
         const overlay = document.createElement("div");
         overlay.id = "overlay";
@@ -397,12 +738,22 @@ export default class Workspace {
 
     setHandlers() {
         setModal();
+        setNewOperInputHandlers(this);
 
+        function setNewOperInputHandlers(mainObj) {
+            const radioBtns = document.querySelectorAll(".cat-input");
+            radioBtns.forEach((element) => {
+                element.addEventListener("click", function(e) {
+                    mainObj.newOperCategoryName = e.target.value;
+                    mainObj.newOperCategoryType = e.target.closest(".col").id;
+                })
+            });
 
-
-
-
-
+            const newOperSum = document.querySelector("#operation-sum-input");
+            newOperSum.addEventListener("keyup", function(e) {
+                mainObj.newOperSum = e.target.value;
+            })
+        }
 
         function setModal() {
             const openModalBtns = document.querySelectorAll('[data-modal-target]');
@@ -439,67 +790,211 @@ export default class Workspace {
         }
     }
 
-    createNewOperationModContent() {
-        const incomeCatArr = this.walletsItems[this.currentWalletName].incomeCategories;
-        const expensesCatArr = this.walletsItems[this.currentWalletName].expensesCategories;
+    writeInChanges() {
+        const currentWalletName = this.walletsNames[0];
+        const currentWallet = JSON.parse(localStorage.getItem(currentWalletName));
+        const operationType = this.newOperCategoryType === "income-cat" ? "plus" : "minus";
+        if(operationType === "plus") {
+            currentWallet.walletBalance = (+currentWallet.walletBalance) + (+this.newOperSum);
+        }
+        if(operationType === "minus") {
+            currentWallet.walletBalance = (+currentWallet.walletBalance) - (+this.newOperSum);
+        }
+        this.totalWealth = currentWallet.walletBalance;
+        localStorage.setItem(currentWalletName, JSON.stringify(currentWallet));
+
+        const catName = this.newOperCategoryName;
+        const sum = this.newOperSum;
+        const transactionType = this.newOperCategoryType === "income-cat" ? "income" : "expenses";
+        const dataObject = this.newOperCategoryType === "income-cat" ? "incomeData" : "expensesData";
+
+        let operationData;
+        if(localStorage.getItem(dataObject)) {
+            operationData = JSON.parse(localStorage.getItem(dataObject));
+            if(operationData[catName]) {
+                operationData[catName].totalSum = (+operationData[catName].totalSum) + (+sum);
+                operationData[catName].operationsAmount = ++operationData[catName].operationsAmount;
+            } else {
+                operationData[catName] = {}
+                operationData[catName].totalSum = +sum;
+                operationData[catName].operationsAmount = 1;
+            }
+        } else {
+                operationData = {};
+                operationData[catName] = {};
+                operationData[catName].totalSum = +sum;
+                operationData[catName].operationsAmount = 1;
+        }
+        localStorage.setItem(dataObject, JSON.stringify(operationData));
+
+        const date = new Date();
+        const currentDate = `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`;
+        let cashFlow;
+        if(localStorage.getItem("cashFlowByDate")) {
+            cashFlow = JSON.parse(localStorage.getItem("cashFlowByDate"));
+            if(cashFlow[currentDate]) {
+                if(cashFlow[currentDate][transactionType]) cashFlow[currentDate][transactionType] += (+sum);
+                else cashFlow[currentDate][transactionType] = (+sum);
+
+            } else {
+                cashFlow[currentDate] = {};
+                cashFlow[currentDate][transactionType] = (+sum);
+            }
+        } else {
+            cashFlow = {};
+            cashFlow[currentDate] = {};
+            cashFlow[currentDate][transactionType] = (+sum);
+        }
+        cashFlow[currentDate].stringifiedDate = date.toJSON();
+        cashFlow[currentDate].totalWealth = this.totalWealth;
+        localStorage.setItem("cashFlowByDate", JSON.stringify(cashFlow));
+
+        this.isCashFlow = true;
+        localStorage.setItem("is-cash-flow", true);
+    }
+
+    createNewOperationModContent(incomeCatArr, expensesCatArr, mainObj) {
+        let prevButton;
+        let nextButton;
+        let currentTab = 0;
+        let selectedCategory;
+        let operationSum;
+        let tabs = [];
 
         this.newOperForm = document.createElement("form");
         this.newOperForm.id = "new-oper-form";
+        this.newOperForm.classList.add("new-oper-form");
         this.newOperForm.setAttribute("method", "post");
 
         function fillTab(tab, ind) {
             if(ind === 0) {
-                const categoriesList = renderCategoriesSelectPage(incomeCatArr,expensesCatArr, "radio", true);
+                const categoriesList = renderCategoriesSelectModule(incomeCatArr,expensesCatArr, "radio", true);
+                categoriesList.id = "categories";
+                categoriesList.classList.add("categories-tab");
                 tab.appendChild(categoriesList);
+                
             }
 
             if(ind === 1) {
+                const wrapper = document.createElement("div");
+                wrapper.classList.add("operation-sum-tab");
+                wrapper.id = "operation-sum";
+
                 const heading = document.createElement("h2");
                 heading.classList.add("centered");
                 heading.textContent = "Enter the sum of the operation";
-                const wrapper = document.createElement("div");
-                wrapper.classList.add("input-inner");
-                wrapper.classList.add("mt-5");
-                const inputWrapper = document.createElement("p");
-                inputWrapper.classList.add("centered");
-                const input = document.createElement("input");
-                input.setAttribute("type", "number");
-                input.setAttribute("placeholder", "Operation sum...");
-                input.classList.add("new-operation-input");
-                input.id = "operationSums";
-                inputWrapper.appendChild(input);
-                wrapper.appendChild(inputWrapper);
-                tab.appendChild(heading);
+                wrapper.appendChild(heading);
+
+                const inputInner = document.createElement("div");
+                inputInner.classList.add("operation-sum-input", "mt-5");
+                wrapper.appendChild(inputInner);
+
+                const p = document.createElement("p");
+                p.classList.add("centered");
+                inputInner.appendChild(p);
+
+                const sumInput = document.createElement("input");
+                sumInput.classList.add("sum-input");
+                sumInput.id = "operation-sum-input";
+                sumInput.setAttribute("type", "number");
+                sumInput.setAttribute("placeholder", "Operation sum...");
+                p.appendChild(sumInput);
+
                 tab.appendChild(wrapper);
+                tab.setAttribute("style", "display: none");
             }
         }
 
-        function createControlBtns() {
+        function createControlBtns(newOperForm) {
             const wrapper = document.createElement("div");
-            wrapper.classList.add("control-block");
+            wrapper.classList.add("control-btns-block");
+    
             const btnsWrapper = document.createElement("div");
             btnsWrapper.classList.add("move-btn");
             btnsWrapper.classList.add("text-right");
+            wrapper.appendChild(btnsWrapper);
+            
             const prevBtn = document.createElement("button");
             prevBtn.id = "prevBtn";
             prevBtn.setAttribute("type", "button");
             prevBtn.textContent = "Previous";
+            btnsWrapper.appendChild(prevBtn);
+            prevButton = prevBtn;
+    
             const nextBtn = document.createElement("button");
             nextBtn.id = "nextBtn";
             nextBtn.setAttribute("type", "button");
             nextBtn.textContent = "Next";
-            btnsWrapper.appendChild(prevBtn);
             btnsWrapper.appendChild(nextBtn);
-            wrapper.appendChild(btnsWrapper);
-            this.newOperForm.appendChild(wrapper);
+            nextButton = nextBtn;
+            newOperForm.appendChild(wrapper);
+        }
+
+
+        function showTab(tabNumber) {
+            tabs = document.querySelectorAll(".new-oper-tab");
+            tabs[tabNumber].style.display = "block";
+            if (tabNumber === 0) {
+                prevButton.style.display = "none";
+            } else {
+                prevButton.style.display = "inline";
+            }
+            if(tabNumber == (tabs.length-1)) {
+                nextButton.innerHTML = "Submit";
+            } else {
+                nextButton.innerHTML = "Next";
+            }
+        }
+
+        function makeStep(direction) {
+        //    if (direction === "forward" && !this.validateForm()) return false;
+            tabs[currentTab].style.display = "none";
+            currentTab = (direction === "forward") ? currentTab + 1 : currentTab - 1;
+           
+            if (currentTab >= tabs.length) {
+                const regForm = document.querySelector("#new-oper-form");
+                regForm.dispatchEvent(new Event('submit'));
+                localStorage.setItem("cashFlow", true);
+                console.log("Done");
+                showFinalTab();
+                mainObj.writeInChanges();
+                location.reload();
+                return;
+            }
+            showTab(currentTab);  
+        }
+
+        function showFinalTab() {
+            const regForm = document.querySelector("#new-oper-form");
+            regForm.remove();
+            let message = document.createElement("h2");
+            message.classList.add("new-oper-success");
+            message.textContent = "The transaction has been successfully added!";
+            document.querySelector("#popup").appendChild(message);
+        }
+
+
+        function setNewOperFormHandlers() {
+            prevButton.addEventListener("click", function() { 
+                makeStep("back") 
+            });
+    
+            // Set handler to the button "Forward"
+             nextButton.addEventListener("click", function() {
+                makeStep("forward");
+            });
         }
         
         for(let i = 0; i < 2; i++) {
             let newTab = document.createElement("div");
-            newTab.classList.add("new-oper-tab", "py-2");
+            newTab.classList.add("new-oper-tab");
             fillTab(newTab, i);
             this.newOperForm.appendChild(newTab);
-            this.tabs.push(newTab);
+            tabs.push(newTab);
         }
+
+        createControlBtns(this.newOperForm);
+        setNewOperFormHandlers();
+        return this.newOperForm;
     }
 }
