@@ -59,16 +59,17 @@ body {
     position: absolute;
     background-color: #cccccc;
     right: 15px;
-    top: -100vh;
+    top: 40px;
     min-width: 200px;
     min-height: 100px;
     z-index: 0;
     border-radius: 5px;
-    
+    opacity: 0;
+    transition: opacity 0.2s linear;
 }
 
 .header-dropdown.active {
-    top: 40px;
+    opacity: 0.9;
 }
 
 

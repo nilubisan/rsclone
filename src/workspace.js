@@ -761,8 +761,10 @@ export default class Workspace {
 
         window.addEventListener("click", (e) => {
             if(!e.target.matches(".header-arrow-btn")) {
-                document.querySelector(".header-arrow-btn.active").classList.remove("active");
-                document.querySelector(".header-dropdown.active").classList.remove("active");
+                if(document.querySelector(".header-arrow-btn.active")) {
+                    document.querySelector(".header-arrow-btn.active").classList.remove("active");
+                    document.querySelector(".header-dropdown.active").classList.remove("active");
+                }
             }
         })
 

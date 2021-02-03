@@ -139,21 +139,20 @@ export default class Registration
 
             if(ind === 3) {
                 const mainWrapper = renderCategoriesSelectModule(incomeCategories, expensesCategories, "checkbox");
-                tab.appendChild(mainWrapper);
-                
+                tab.appendChild(mainWrapper);  
             } 
         }
 
         const incomeCategories = [
-            "salary",
+            "bonus",
             "business",
-            "gifts",
             "extra-income",
-            "loan",
-            "parental",
+            "gifts",
             "insurance",
+            "loan",
             "other",
-            "bonus"
+            "parental",
+            "salary"
         ];
 
         const expensesCategories = [
@@ -247,8 +246,6 @@ export default class Registration
                     element.value = currentWallet[element.id];
                 }
         }
-
-        
      })
     }
 
@@ -266,15 +263,18 @@ export default class Registration
     }
 
     makeStep(direction) {
+        console.log(direction);
         if (direction === "forward" && !this.validateForm()) return false;
         this.tabs[this.currentTab].style.display = "none";
         this.currentTab = (direction === "forward") ? this.currentTab + 1 : this.currentTab - 1;
        
         if (this.currentTab >= this.tabs.length) {
+            this.setCategories();
             const regForm = document.querySelector("#reg-form");
             regForm.dispatchEvent(new Event('submit'));
             localStorage.setItem("isRegUser", "true");
             document.querySelector("#app").innerHTML = "";
+
             new Workspace(this.mainWrapper);
             return;
         }
@@ -293,7 +293,7 @@ export default class Registration
         let valid = true;
         let y = this.tabs[this.currentTab].querySelectorAll('input');
         for (let i = 0; i < y.length; i++) {
-            if (y[i].value = "") {
+            if (y[i].value === "") {
                 y[i].className += " invalid";
                 valid = false;
             }
@@ -313,6 +313,17 @@ export default class Registration
             prop[ourPropName].push(value);
         }
         localStorage.setItem(lSPropName, JSON.stringify(prop));
+    }
+
+    setCategories() {
+        let categories = document.querySelectorAll(".cat-input");
+        categories.forEach((element) => {
+            if(element.checked) { 
+                let parsedCategories = {};
+                parsedCategories[element.name] = element.value;
+                this.writeInLStorage(this.walletName, "allowedCategories", JSON.stringify(parsedCategories), true);
+            }
+        })
     }
 
     setHandlers() {
@@ -375,7 +386,7 @@ export default class Registration
         }.bind(this);
 
         // Save checked categories in LocalStorage for <input type = "checkbox">
-        this.regCatCheckbox = document.querySelectorAll(".cat-input");
+    /*    this.regCatCheckbox = document.querySelectorAll(".cat-input");
         for(let i=0; i < this.regCatCheckbox.length; i++) {
             this.regCatCheckbox[i].addEventListener("click", function(e) {
                 if(e.target.checked) {
@@ -394,6 +405,6 @@ export default class Registration
                         this.writeInLStorage(this.walletName, "allowedCategories", editCategories);
                     }
                 }.bind(this));
-        }
-    }
+        } */
+    } 
 }

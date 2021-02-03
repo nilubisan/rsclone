@@ -94,6 +94,7 @@ function createCategoryEl(catName, catType, inputType, ind) {
     input.setAttribute("type", inputType);
     input.setAttribute("name", `${catType}-cat`);
     input.setAttribute("value", catName);
+    if(inputType === "checkbox") input.checked = true;
     input.classList.add("cat-input");
     category.appendChild(input);
 
