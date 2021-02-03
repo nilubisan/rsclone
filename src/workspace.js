@@ -16,9 +16,9 @@ export default class Workspace {
     }
 
     retrieveDataFromStorage() {
-        const fName = localStorage.getItem("fName");
-        const lName = localStorage.getItem("lName");
-        this.userName = fName;
+        this.fName = localStorage.getItem("fName");
+        this.lName = localStorage.getItem("lName");
+        this.userName = this.fName;
         this.walletsNames = [];
         this.walletsItems = {};
         const wallets = JSON.parse(localStorage.getItem("wallet-name"));
@@ -43,7 +43,6 @@ export default class Workspace {
             this.totalWealth = (+wallet.walletBalance);
             this.currency = wallet.currency;
             this.currentWalletName = this.walletsNames[0];
-            console.log(this.walletsItems[importedWalletName]);
         });
         if(localStorage.getItem("is-cash-flow")) {
             this.isCashFlow = true;
@@ -105,7 +104,6 @@ export default class Workspace {
         headerRight.classList.add("header-right", "col-4");
         headerInner.appendChild(headerRight);
 
-
         const headerUserMenu = document.createElement("div");
         headerUserMenu.classList.add("header-user-menu");
         headerRight.appendChild(headerUserMenu);
@@ -119,17 +117,36 @@ export default class Workspace {
         userName.textContent = this.userName;
         headerUserMenu.appendChild(userName);
         
-        const arrowBtn = document.createElement("span");
-        arrowBtn.classList.add("header-arrow-btn");
-        headerUserMenu.appendChild(arrowBtn);
+        this.buttonDropdown = document.createElement("span");
+        this.buttonDropdown.classList.add("header-arrow-btn");
+        headerUserMenu.appendChild(this.buttonDropdown);
         
-        const headerDropdown = document.createElement("div");
-        headerDropdown.classList.add("header-dropdown");
-        headerRight.appendChild(headerDropdown);
+        this.headerDropdown = document.createElement("div");
+        this.headerDropdown.classList.add("header-dropdown");
+        headerRight.appendChild(this.headerDropdown);
 
-        const headerDropdownContent = document.createElement("span");
-        headerDropdownContent.textContent = "Hello";
-        headerDropdown.appendChild(headerDropdownContent);
+        const headerDropdownList = document.createElement("ul");
+        headerDropdownList.classList.add("header-dropdown-list");
+        this.headerDropdown.appendChild(headerDropdownList);
+
+        const headerDropdownListItem = document.createElement("li");
+        headerDropdownListItem.classList.add("header-dropdown-list-item");
+        headerDropdownList.appendChild(headerDropdownListItem);
+
+        const headerDropdownListIcon = document.createElement("img");
+        headerDropdownListIcon.src = "assets/images/rubbish.svg"
+        headerDropdownListIcon.id = "header-dropdown-icon";
+        headerDropdownListItem.appendChild(headerDropdownListIcon);
+
+        const headerDropdownListLink = document.createElement("a");
+        headerDropdownListLink.classList.add("header-dropdown-link");
+        headerDropdownListLink.id = "delete-wallet";
+        headerDropdownListLink.textContent = "Delete wallet";
+        headerDropdownListItem.appendChild(headerDropdownListLink);
+
+
+
+
 
         return header;
     }
@@ -737,6 +754,26 @@ export default class Workspace {
     }
 
     setHandlers() {
+        this.buttonDropdown.addEventListener("click", (e) => {
+            e.target.classList.toggle("active")
+            this.headerDropdown.classList.toggle("active");
+        })
+
+        window.addEventListener("click", (e) => {
+            if(!e.target.matches(".header-arrow-btn")) {
+                document.querySelector(".header-arrow-btn.active").classList.remove("active");
+                document.querySelector(".header-dropdown.active").classList.remove("active");
+            }
+        })
+
+        document.querySelector("#delete-wallet").addEventListener(("click"), () => {
+            localStorage.clear();
+            localStorage.setItem("fName", this.fName);
+            localStorage.setItem("lName", this.lName);
+            location.reload();
+        })
+
+
         setModal();
         setNewOperInputHandlers(this);
 

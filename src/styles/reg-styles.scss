@@ -5,6 +5,12 @@
     align-items: center;
 }
 
+.reg-window {
+    background-color: #ffc107;
+    width: 400px;
+    border-radius: 5px;
+}
+
 .centered {
     text-align: center
 }
@@ -15,6 +21,26 @@ input.invalid {
 
 .reg-tab {
     display: none;
+    padding: 10px;
+}
+
+.reg-tab-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.reg-control-block {
+    padding: 10px;
+}
+
+.reg-steps {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#reg-currency-select {
+    margin-left: 5px;
+    height: 100%;
 }
 
 .reg-step {

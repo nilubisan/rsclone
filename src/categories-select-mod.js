@@ -95,7 +95,6 @@ function createCategoryEl(catName, catType, inputType, ind) {
     input.setAttribute("name", `${catType}-cat`);
     input.setAttribute("value", catName);
     input.classList.add("cat-input");
-  //  input.id = `${catType}-cat${ind}`;
     category.appendChild(input);
 
     const label = document.createElement("label");

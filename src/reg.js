@@ -16,8 +16,7 @@ export default class Registration
         const wrapper = document.createElement("div");
         wrapper.classList.add("reg-main");
         const contentInner = document.createElement("div");
-        const contentInnerClasses = ["container", "bg-warning", "w-25", "mx-auto"];
-        contentInnerClasses.forEach((item) => contentInner.classList.add(item));
+        contentInner.classList.add("reg-window")
         this.regForm = document.createElement("form");
         this.regForm.id = "reg-form";
         this.regForm.setAttribute("method", "post");
@@ -30,79 +29,103 @@ export default class Registration
         function fillTab(tab, ind) {
             if(ind === 0) {
                 const heading1 = document.createElement("h2");
-                heading1.classList.add("centered");
-                heading1.textContent = "Hi! My name is SmartSpend";
+                heading1.classList.add("reg-tab-title");
+                heading1.textContent = "Hi! My name is Spendee";
+                tab.appendChild(heading1);
+
                 const heading2 = document.createElement("h2");
-                heading2.classList.add("centered");
+                heading2.classList.add("reg-tab-title");
                 heading2.textContent = "What is your name?";
+                tab.appendChild(heading2);
+
                 const wrapper = document.createElement("div");
                 wrapper.classList.add("reg-tab__inputs-inner");
                 wrapper.classList.add("mt-5");
+                tab.appendChild(wrapper);
+
                 const inputWrapper1 = document.createElement("p");
                 inputWrapper1.classList.add("centered");
+                wrapper.appendChild(inputWrapper1);
+
                 const input1 = document.createElement("input");
                 input1.setAttribute("type", "text");
                 input1.setAttribute("placeholder", "First name...");
+                input1.setAttribute("minlength", "1");
+                input1.setAttribute("maxlength", "20");
                 input1.classList.add("reg-input");
                 input1.id = "fName";
+                inputWrapper1.appendChild(input1);
+
                 const inputWrapper2 = document.createElement("p");
                 inputWrapper2.classList.add("centered");
+                wrapper.appendChild(inputWrapper2);
+
                 const input2 = document.createElement("input");
                 input2.setAttribute("type", "text");
                 input2.setAttribute("placeholder", "Last name...");
+                input2.setAttribute("minlength", "1");
+                input2.setAttribute("maxlength", "20");
                 input2.classList.add("reg-input");
                 input2.id = "lName";
-                
-                inputWrapper1.appendChild(input1);
                 inputWrapper2.appendChild(input2);
-                wrapper.appendChild(inputWrapper1);
-                wrapper.appendChild(inputWrapper2);
-                tab.appendChild(heading1);
-                tab.appendChild(heading2);
-                tab.appendChild(wrapper);
             }
             if(ind === 1) {
                 const heading1 = document.createElement("h2");
-                heading1.classList.add("centered");
+                heading1.classList.add("reg-tab-title");
                 heading1.textContent = "Let's create a new wallet";
+                tab.appendChild(heading1);
+
                 const heading2 = document.createElement("h2");
-                heading2.classList.add("centered");
+                heading2.classList.add("reg-tab-title");
                 heading2.textContent = "Enter name of your first wallet";
+                tab.appendChild(heading2);
+
                 const wrapper = document.createElement("div");
                 wrapper.classList.add("reg-tab__inputs-inner");
                 wrapper.classList.add("mt-5");
+                tab.appendChild(wrapper);
+
                 const inputWrapper = document.createElement("p");
                 inputWrapper.classList.add("centered");
+                wrapper.appendChild(inputWrapper);
+
                 const input = document.createElement("input");
                 input.setAttribute("type", "text");
                 input.setAttribute("placeholder", "Wallet name...");
+                input.setAttribute("minlength", "1");
+                input.setAttribute("maxlength", "20");
                 input.classList.add("reg-input");
                 input.id = "wallet-name";
-
                 inputWrapper.appendChild(input);
-                wrapper.appendChild(inputWrapper);
-                tab.appendChild(heading1);
-                tab.appendChild(heading2);
-                tab.appendChild(wrapper);
             }
             if(ind === 2) {
                 const heading = document.createElement("h2");
-                heading.classList.add("centered");
+                heading.classList.add("reg-tab-title");
                 heading.textContent = "Enter initial balance";
+                tab.appendChild(heading);
+
                 const wrapper = document.createElement("div");
                 wrapper.classList.add("reg-tab__inputs-inner");
                 wrapper.classList.add("mt-5");
+                tab.appendChild(wrapper);
+
                 const inputWrapper = document.createElement("p");
                 inputWrapper.classList.add("centered");
+                wrapper.appendChild(inputWrapper);
+
                 const input = document.createElement("input");
                 input.setAttribute("type", "number");
-                input.setAttribute("placeholder", "Wallet balance...");
+                input.setAttribute("min", "0");
+                input.setAttribute("max", "999999999");
+                input.setAttribute("size", "1");
                 input.classList.add("reg-input");
                 input.id = "walletBalance";
+                inputWrapper.appendChild(input);
+
                 const select = document.createElement("select");
                 select.setAttribute("name", "currency");
                 select.id = "reg-currency-select";
-                const currencies = ["USD", "RUB", "KZT"];
+                const currencies = ["USD", "EUR", "BYR", "RUB", "UAH", "KZT", "KGS", "UZS"];
                 currencies.forEach((item) => {
                     let opt = document.createElement("option");
                     opt.classList.add("curr-name");
@@ -111,12 +134,7 @@ export default class Registration
                     opt.textContent = item;
                     select.appendChild(opt);
                 })
-
-                inputWrapper.appendChild(input);
                 inputWrapper.appendChild(select);
-                wrapper.appendChild(inputWrapper);
-                tab.appendChild(heading);
-                tab.appendChild(wrapper);
             }
 
             if(ind === 3) {
@@ -154,7 +172,6 @@ export default class Registration
         for(let i = 0; i < 4; i++) {
             let newTab = document.createElement("div");
             newTab.classList.add("reg-tab");
-            newTab.classList.add("py-2");
             fillTab(newTab, i);
             this.regForm.appendChild(newTab);
             this.tabs.push(newTab);
@@ -257,7 +274,6 @@ export default class Registration
             const regForm = document.querySelector("#reg-form");
             regForm.dispatchEvent(new Event('submit'));
             localStorage.setItem("isRegUser", "true");
-            this.writeInLStorage(this.walletName, "creationData", new Date());
             document.querySelector("#app").innerHTML = "";
             new Workspace(this.mainWrapper);
             return;
