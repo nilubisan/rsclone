@@ -7,5 +7,5 @@ const app = document.querySelector("#app");
 if(!localStorage.getItem("isRegUser")) {
     let reg = new Registration(app);
 } else {
-    let wS = new Workspace(app);
+    let wS = new Workspace(app, Registration);
 }

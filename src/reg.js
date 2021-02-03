@@ -33,8 +33,8 @@ export default class Registration
                 heading1.textContent = "Hi! My name is Spendee";
                 tab.appendChild(heading1);
 
-                const heading2 = document.createElement("h2");
-                heading2.classList.add("reg-tab-title");
+                const heading2 = document.createElement("h3");
+                heading2.classList.add("reg-tab-subtitle");
                 heading2.textContent = "What is your name?";
                 tab.appendChild(heading2);
 
@@ -75,8 +75,8 @@ export default class Registration
                 heading1.textContent = "Let's create a new wallet";
                 tab.appendChild(heading1);
 
-                const heading2 = document.createElement("h2");
-                heading2.classList.add("reg-tab-title");
+                const heading2 = document.createElement("h3");
+                heading2.classList.add("reg-tab-subtitle");
                 heading2.textContent = "Enter name of your first wallet";
                 tab.appendChild(heading2);
 
@@ -160,7 +160,7 @@ export default class Registration
             "car",
             "education",
             "entertainment",
-            "family&pers",
+            "family&personal",
             "food&drink",
             "gifts",
             "groceries",
@@ -242,7 +242,6 @@ export default class Registration
                 const currentWalletName = currentWalletNameObj.names[0];
                 let currentWallet = JSON.parse(localStorage.getItem(currentWalletName));
                 if(currentWallet[element.id]) {
-                    console.log(currentWallet[element.id]);
                     element.value = currentWallet[element.id];
                 }
         }
@@ -263,7 +262,6 @@ export default class Registration
     }
 
     makeStep(direction) {
-        console.log(direction);
         if (direction === "forward" && !this.validateForm()) return false;
         this.tabs[this.currentTab].style.display = "none";
         this.currentTab = (direction === "forward") ? this.currentTab + 1 : this.currentTab - 1;

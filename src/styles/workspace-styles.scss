@@ -143,7 +143,8 @@ body {
 .wallet-inner {
     display: flex;
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 10px;
+
     padding: 1rem;
 }
 
@@ -189,14 +190,33 @@ body {
 
 }
 
+.wallet-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.wallet-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
 .wallet-type {
     font-size: 0.8rem;
-    color: rgb(128, 128, 128)
+    color: rgba(128, 128, 128, 0.5)
 }
 
 .wallet-balance {
-    color: #51ff00;
-    font-size: 1.2rem;
+    
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.wallet-balance.positive {
+    color: #2dba75;
+}
+
+.wallet-balance.negative {
+    color: #f14c52;
 }
 
 .analytics-subsection {
@@ -293,14 +313,13 @@ body {
     background-color: #fff;
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px -9px rgba(0,0,0,0.58);
     padding: 10px;
 }
 
 
-.chart-inner {
-    
-}
+
 
 
 .wallet-btn-icon {
@@ -318,14 +337,20 @@ margin-right: 15px;
 }
 
 
-.chart-wrapper {
-    border-radius: 8px;
+.chart-item {
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px -9px rgba(0,0,0,0.58);
 }
+
+
 
 .chart-header {
     background-color: #fff;
     margin: 0;
 }
+
+
 
 .chart-title {
     margin: 0;
@@ -341,7 +366,7 @@ margin-right: 15px;
 
 .chart-list-inner {
     background-color: #fff;
-    padding: 5px;
+    padding: 20px 20px 10px;
 }
 
 .chart-list {
@@ -353,15 +378,58 @@ margin-right: 15px;
 .chart-list-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 
 .chart-list-icon {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    border-radius: 50px;
+    vertical-align: middle;
+    background-size: 30px 30px;
+}
+
+.chart-list-title {
+    flex: 1 1 calc(100% / 3);
+    vertical-align: middle;
+}
+
+.chart-amount-wrapper {
+    flex: 1 1 calc(100% / 3);
+    text-align: center;
+}
+
+.chart-list-amount {
     
 }
+
+.chart-list-sum {
+
+    font-weight: bold;
+}
+
+.chart-list-sum.positive {
+    color: #2dba75;
+}
+
+.chart-list-sum.negative {
+    color: #f14c52;
+}
+
+
+
+.chart-sum-wrapper {
+    flex: 1 1 calc(100% / 3);
+    text-align: right;
+}
+
+
+
+
 
 
 
@@ -389,7 +457,6 @@ margin-right: 15px;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%) scale(0);
-    border: 1px solid #000;
     width: 40%;
     padding: 30px;
     max-width: 400px;
@@ -430,8 +497,21 @@ margin-right: 15px;
     opacity: 1;
 }
 
+.close-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+}
+
 .new-oper-success {
     text-align: center;
     margin: 40px 0;
 }
 
+#income-cat.invalid {
+    background-color: rgba($color: #ffdddd, $alpha: 0.3);
+}
+
+.control-btns-block {
+    margin-top: 20px;
+}

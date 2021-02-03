@@ -1,15 +1,16 @@
 import renderCategoriesSelectModule from "./categories-select-mod.js";
 export default class Workspace {
-    constructor(app) {
+    constructor(app, regClass) {
         this.mainWrapper = app;
-        this.totalWealth = 0;
-        this.cashFlow = 0;
-        this.totalIncome = 0;
-        this.totalExpenses = 0;
+        this.regClass = regClass;
         this.init();
     }
 
     init() {
+        this.totalWealth = 0;
+        this.cashFlow = 0;
+        this.totalIncome = 0;
+        this.totalExpenses = 0;
         this.retrieveDataFromStorage();
         this.renderWorkspace();
         this.setHandlers();
@@ -59,7 +60,6 @@ export default class Workspace {
             let incomeData = JSON.parse(localStorage.getItem("incomeData"));
             for(const[key,value] of Object.entries(incomeData)) {
                 this.totalIncome += (+value.totalSum);
-                console.log(this.totalIncome);
             }
 
             this.cashFlow = this.totalIncome - this.totalExpenses;
@@ -168,38 +168,44 @@ export default class Workspace {
         function createWalletElement(newWalletName, newWalletType, newWalletBalance, newWalletCurr) {
             const walletBody = document.createElement("div");
             walletBody.classList.add("wallet-body", "p-2");
+
             const walletInner = document.createElement("div");
             walletInner.classList.add("wallet-inner");
+            walletBody.appendChild(walletInner);
+
             const walletLogoWrapper = document.createElement("div");
             walletLogoWrapper.classList.add("wallet-logo");
+            walletInner.appendChild(walletLogoWrapper);
+
             const walletLogo = new Image(22, 20);
             walletLogo.src="assets/images/wallet-logo.svg";
             walletLogoWrapper.appendChild(walletLogo);
-            walletInner.appendChild(walletLogoWrapper);
+
             const walletInfo = document.createElement("div");
             walletInfo.classList.add("wallet-info");
+            walletInner.appendChild(walletInfo);
+
             const walletName = document.createElement("span");
             walletName.classList.add("wallet-name");
             walletName.textContent = newWalletName;
+            walletInfo.appendChild(walletName);
+
+ 
+
             const walletType = document.createElement("span");
             walletType.classList.add("wallet-type");
             walletType.textContent = newWalletType;
-            const walletBalance = document.createElement("div");
-            walletBalance.classList.add("wallet-balance");
-            const walletBalSum = document.createElement("span");
-            walletBalSum.classList.add("wallet-balance-sum");
-            walletBalSum.textContent = newWalletBalance > 0 ? `+${newWalletBalance}` : newWalletBalance;
-            const walletBallCurr = document.createElement("span");
-            walletBallCurr.classList.add("wallet-balance-currency");
-            walletBallCurr.textContent = ` ${newWalletCurr}`;
-            walletBalance.appendChild(walletBalSum);
-            walletBalance.appendChild(walletBallCurr);
-            walletInfo.appendChild(walletName);
-            walletInfo.appendChild(makeLineBreak());
             walletInfo.appendChild(walletType);
-            walletInfo.appendChild(walletBalance);
-            walletInner.appendChild(walletInfo);
-            walletBody.appendChild(walletInner);
+
+            const walletBalance = document.createElement("span");
+            walletBalance.classList.add("wallet-balance");
+              
+            let formattedNum = (+newWalletBalance).toLocaleString('en-US', {maximumFractionDigits:2});
+            walletBalance.textContent = newWalletBalance > 0 ? `+${formattedNum} ${newWalletCurr}` : `${formattedNum} ${newWalletCurr}`;
+            if(newWalletBalance >= 0) walletBalance.classList.add("positive");
+            else walletBalance.classList.add("negative");
+            walletInfo.appendChild(walletBalance); 
+
             return walletBody;
         }
 
@@ -234,7 +240,7 @@ export default class Workspace {
         walletsWrapper.id = "wallets";
         const walletsTitle = document.createElement("h2");
         walletsTitle.classList.add("main-section-title");
-        walletsTitle.textContent = "Wallets";
+        walletsTitle.textContent = "Wallet";
         const walletSection = document.createElement("div");
         walletSection.classList.add("wallets-section");
 
@@ -254,6 +260,20 @@ export default class Workspace {
     }
 
     renderAnalytics() {
+        const currency = this.currency;
+        const colorsArr = [
+            "#4682B4",
+            "#FF4500",
+            "#8A2BE2",
+            "#778899",
+            "#FF7F50",
+            "#B8860B",
+            "#BDB76B",
+            "#8FBC8F",
+            "#B0C4DE",
+            "#87CEFA"
+        ];
+
         function createAnalyticsDateToggle() {
             const mainWrapper = document.createElement("div");
             mainWrapper.classList.add("analytics-subsection", "row");
@@ -338,7 +358,7 @@ export default class Workspace {
             return mainWrapper;
         }
     
-        function createDataIndexes(totalWealth, cashFlow, totalExpenses, totalIncome) {
+        function createDataIndexes(currency, totalWealth, cashFlow, totalExpenses, totalIncome) {
             function createIndex(indexTitle, indexValue, type) {
                 const wrapper = document.createElement("div");
                 wrapper.classList.add("index-inner", "col-3");
@@ -348,9 +368,14 @@ export default class Workspace {
                 indTitle.classList.add("index-title");
                 indTitle.textContent = indexTitle;
                 const indValue = document.createElement("span");
-                indValue.classList.add("index-value");
+                indValue.classList.add("wallet-balance");
                 indValue.id = type;
-                indValue.textContent = indexValue;
+                indexValue = +indexValue;
+                if(type === "total-expenses" && indexValue > 0) indexValue = -indexValue;
+                let formattedNum = indexValue.toLocaleString('en-US', {maximumFractionDigits:2});
+                indValue.textContent = indexValue > 0 ? `+${formattedNum} ${currency}` : `${formattedNum} ${currency}`;
+                if(indexValue >= 0) indValue.classList.add("positive");
+                else indValue.classList.add("negative");
                 index.appendChild(indTitle);
                 index.appendChild(indValue);
                 wrapper.appendChild(index);
@@ -383,10 +408,14 @@ export default class Workspace {
                 const totalWealthChartWrapper = document.createElement("div");
                 totalWealthChartWrapper.classList.add("chart-wrapper", "col-6")
                 row1.appendChild(totalWealthChartWrapper);
-    
+
+                const totalWealthChartItem = document.createElement("div");
+                totalWealthChartItem.classList.add("chart-item")
+                totalWealthChartWrapper.appendChild(totalWealthChartItem);
+                
                 const totalWealthChartHeader = document.createElement("div");
                 totalWealthChartHeader.classList.add("chart-header");
-                totalWealthChartWrapper.appendChild(totalWealthChartHeader);
+                totalWealthChartItem.appendChild(totalWealthChartHeader);
     
                 const totalWealthChartTitle = document.createElement("h2");
                 totalWealthChartTitle.classList.add("chart-title");
@@ -396,17 +425,21 @@ export default class Workspace {
                 const totalWealthChart = document.createElement("div");
                 totalWealthChart.classList.add("chart-body");
                 totalWealthChart.id = "totalwealth-area-chart";
-                totalWealthChartWrapper.appendChild(totalWealthChart);
+                totalWealthChartItem.appendChild(totalWealthChart);
             }
 
             if(localStorage.getItem("cashFlowByDate")) {
                 const cashFlowChartWrapper = document.createElement("div");
                 cashFlowChartWrapper.classList.add("chart-wrapper", "col-6")
                 row1.appendChild(cashFlowChartWrapper);
+
+                const cashFlowChartItem = document.createElement("div");
+                cashFlowChartItem.classList.add("chart-item")
+                cashFlowChartWrapper.appendChild(cashFlowChartItem);
     
                 const cashFlowChartHeader = document.createElement("div");
                 cashFlowChartHeader.classList.add("chart-header");
-                cashFlowChartWrapper.appendChild(cashFlowChartHeader);
+                cashFlowChartItem.appendChild(cashFlowChartHeader);
     
                 const cashFlowChartTitle = document.createElement("h2");
                 cashFlowChartTitle.classList.add("chart-title");
@@ -416,7 +449,7 @@ export default class Workspace {
                 const cashFlowChart = document.createElement("div");
                 cashFlowChart.classList.add("chart-body");
                 cashFlowChart.id = "cashflow-chart-pie";
-                cashFlowChartWrapper.appendChild(cashFlowChart);
+                cashFlowChartItem.appendChild(cashFlowChart);
             }
 
             const row2 = document.createElement("div");
@@ -427,10 +460,14 @@ export default class Workspace {
                 const incomeChartWrapper = document.createElement("div");
                 incomeChartWrapper.classList.add("chart-wrapper", "col-6")
                 row2.appendChild(incomeChartWrapper);
+
+                const incomeChartItem = document.createElement("div");
+                incomeChartItem.classList.add("chart-item")
+                incomeChartWrapper.appendChild(incomeChartItem);
     
                 const incomeChartHeader = document.createElement("div");
                 incomeChartHeader.classList.add("chart-header");
-                incomeChartWrapper.appendChild(incomeChartHeader);
+                incomeChartItem.appendChild(incomeChartHeader);
 
                 const incomeChartTitle = document.createElement("h2");
                 incomeChartTitle.classList.add("chart-title");
@@ -440,22 +477,26 @@ export default class Workspace {
                 const incomeChart = document.createElement("div");
                 incomeChart.classList.add("chart-body");
                 incomeChart.id = "income-chart-pie";
-                incomeChartWrapper.appendChild(incomeChart);
+                incomeChartItem.appendChild(incomeChart);
     
                 const incomeChartListInner = document.createElement("div");
                 incomeChartListInner.classList.add("chart-list-inner");
-                incomeChartListInner.appendChild(drawIncomeList());
-                incomeChartWrapper.appendChild(incomeChartListInner);
+                incomeChartListInner.appendChild(drawChartList("incomeData"));
+                incomeChartItem.appendChild(incomeChartListInner);
             }
 
             if(localStorage.getItem("expensesData")) {
                 const expensesChartWrapper = document.createElement("div");
                 expensesChartWrapper.classList.add("chart-wrapper", "col-6")
                 row2.appendChild(expensesChartWrapper);
+
+                const expensesChartItem = document.createElement("div");
+                expensesChartItem.classList.add("chart-item")
+                expensesChartWrapper.appendChild(expensesChartItem);
     
                 const expensesChartHeader = document.createElement("div");
                 expensesChartHeader.classList.add("chart-header");
-                expensesChartWrapper.appendChild(expensesChartHeader);
+                expensesChartItem.appendChild(expensesChartHeader);
     
                 const expensesChartTitle = document.createElement("h2");
                 expensesChartTitle.classList.add("chart-title");
@@ -465,12 +506,12 @@ export default class Workspace {
                 const expensesChart = document.createElement("div");
                 expensesChart.classList.add("chart-body");
                 expensesChart.id = "expenses-chart-pie";
-                expensesChartWrapper.appendChild(expensesChart);
+                expensesChartItem.appendChild(expensesChart);
     
                 const expensesChartListInner = document.createElement("div");
                 expensesChartListInner.classList.add("chart-list-inner");
-                expensesChartListInner.appendChild(drawExpensesList());
-                expensesChartWrapper.appendChild(expensesChartListInner);
+                expensesChartListInner.appendChild(drawChartList("expensesData"));
+                expensesChartItem.appendChild(expensesChartListInner);
 
             }
 
@@ -611,12 +652,12 @@ export default class Workspace {
             chart.draw(data, options);
         }
 
-        function drawIncomeList() {
+        function drawChartList(dataType) {
             let list = document.createElement("ul");
             list.classList.add("chart-list");
-
-            const incomeData = JSON.parse(localStorage.getItem("incomeData"));
-            for(const[key,value] of Object.entries(incomeData)) {
+            let i = 0;
+            const operationsData = JSON.parse(localStorage.getItem(dataType));
+            for(const[key,value] of Object.entries(operationsData)) {
                 const listItem = document.createElement("li");
                 listItem.classList.add("chart-list-item");
                 list.appendChild(listItem);
@@ -628,7 +669,7 @@ export default class Workspace {
                 const listItemIcon = document.createElement("span");
                 listItemIcon.classList.add("chart-list-icon");
                 const icoUrl = `assets/images/${key}_icon.svg`;
-                listItemIcon.style.background = `url(${icoUrl}) royalblue center`;
+                listItemIcon.style.background = `url(${icoUrl}) ${colorsArr[i]} center`;
                 listItemTitle.appendChild(listItemIcon);
 
                 const listItemName = document.createElement("span");
@@ -636,22 +677,38 @@ export default class Workspace {
                 listItemName.textContent = key;
                 listItemTitle.appendChild(listItemName);
 
+                const listAmountWrapper = document.createElement("div");
+                listAmountWrapper.classList.add("chart-amount-wrapper");
+                listItem.appendChild(listAmountWrapper);
+
                 const listAmountCounter = document.createElement("span");
                 listAmountCounter.classList.add("chart-list-amount");
                 let listAmountWord = value.operationsAmount > 1 ? "transactions" : "transaction";
                 listAmountCounter.textContent = `${value.operationsAmount} ${listAmountWord}`;
-                listItem.appendChild(listAmountCounter);
+                listAmountWrapper.appendChild(listAmountCounter);
+
+                const listSumWrapper = document.createElement("div");
+                listSumWrapper.classList.add("chart-sum-wrapper");
+                listItem.appendChild(listSumWrapper);
 
                 const listSum = document.createElement("span");
                 listSum.classList.add("chart-list-sum");
-                listSum.textContent = value.totalSum;
-                listItem.appendChild(listSum);
+                let totalSum = +value.totalSum;
+                totalSum = dataType === "expensesData" ? -totalSum : totalSum;
+                let sum = totalSum.toLocaleString('en-US', {maximumFractionDigits:2});
+                if(totalSum > 0) sum = `+${sum}`;
+                if(totalSum >= 0) listSum.classList.add("positive");
+                else listSum.classList.add("negative");
+                listSum.textContent = `${sum} ${currency}`;
+                listSumWrapper.appendChild(listSum);
+
+                i++;
             }
 
             return list;
         }
 
-        function drawExpensesList() {
+        function drawExpensesList(dataType) {
             let list = document.createElement("ul");
             list.classList.add("chart-list");
 
@@ -713,11 +770,11 @@ export default class Workspace {
         analyticsWrapper.appendChild(analyticsTitle);
       //  analyticsWrapper.appendChild(createAnalyticsDateToggle());
      //   if(this.isCashFlow) analyticsWrapper.appendChild(createAnalyticsFilters());
-        const totalWealth = `${this.totalWealth} ${this.currency}`;
-        const cashFlow = `${this.cashFlow} ${this.currency}`;
-        const totalExpenses = `${this.totalExpenses} ${this.currency}`;
-        const totalIncome = `${this.totalIncome} ${this.currency}`;
-        analyticsWrapper.appendChild(createDataIndexes(totalWealth, cashFlow, totalExpenses, totalIncome));
+        const totalWealth = this.totalWealth;
+        const cashFlow = this.cashFlow;
+        const totalExpenses = this.totalExpenses;
+        const totalIncome = this.totalIncome;
+        analyticsWrapper.appendChild(createDataIndexes(this.currency, totalWealth, cashFlow, totalExpenses, totalIncome));
         if(this.isCashFlow) {
             analyticsWrapper.appendChild(createCharts());
         }
@@ -740,7 +797,7 @@ export default class Workspace {
         const closeBtn = document.createElement("button");
         closeBtn.classList.add("close-btn");
         closeBtn.setAttribute("data-close-btn", "");
-        closeBtn.textContent = "X";
+        closeBtn.style.background = 'url("assets/images/cancel.png") no-repeat center center';
         popupHeader.appendChild(closeBtn);
         const incomeCatArr = this.walletsItems[this.currentWalletName].incomeCategories;
         const expensesCatArr = this.walletsItems[this.currentWalletName].expensesCategories;
@@ -751,6 +808,11 @@ export default class Workspace {
         const overlay = document.createElement("div");
         overlay.id = "overlay";
         document.querySelector("body").appendChild(overlay);
+    }
+
+    rerenderPage() {
+        this.mainWrapper.innerHTML = "";
+        this.init()
     }
 
     setHandlers() {
@@ -944,6 +1006,33 @@ export default class Workspace {
             }
         }
 
+        function validateForm() {
+            let valid = true;
+            if(tabs[currentTab].querySelectorAll('.sum-input').length != 0) {
+                let y = tabs[currentTab].querySelectorAll('.sum-input');
+                for (let i = 0; i < y.length; i++) {
+                    if (y[i].value === "") {
+                        y[i].className += " invalid";
+                        valid = false;
+                    }
+                }
+            }
+            else if(tabs[currentTab].querySelectorAll('.cat-input').length != 0) {
+                let y = tabs[currentTab].querySelectorAll('.cat-input');
+                for (let i = 0; i < y.length; i++) {
+                    if (y[i].checked === false) {
+                        let container = y[i].closest(".col");
+                        container.classList.add("invalid");
+                        valid = false;
+                    } else {
+                        valid = true;
+                        break;
+                    }
+                }
+            }
+            return valid;
+        }
+
         function createControlBtns(newOperForm) {
             const wrapper = document.createElement("div");
             wrapper.classList.add("control-btns-block");
@@ -956,6 +1045,7 @@ export default class Workspace {
             const prevBtn = document.createElement("button");
             prevBtn.id = "prevBtn";
             prevBtn.setAttribute("type", "button");
+            prevBtn.style.display = "none";
             prevBtn.textContent = "Previous";
             btnsWrapper.appendChild(prevBtn);
             prevButton = prevBtn;
@@ -986,15 +1076,13 @@ export default class Workspace {
         }
 
         function makeStep(direction) {
-        //    if (direction === "forward" && !this.validateForm()) return false;
+        if (direction === "forward" && !validateForm()) return false;
             tabs[currentTab].style.display = "none";
             currentTab = (direction === "forward") ? currentTab + 1 : currentTab - 1;
-           
             if (currentTab >= tabs.length) {
                 const regForm = document.querySelector("#new-oper-form");
                 regForm.dispatchEvent(new Event('submit'));
                 localStorage.setItem("cashFlow", true);
-                console.log("Done");
                 showFinalTab();
                 mainObj.writeInChanges();
                 location.reload();
@@ -1036,4 +1124,6 @@ export default class Workspace {
         setNewOperFormHandlers();
         return this.newOperForm;
     }
+
+
 }

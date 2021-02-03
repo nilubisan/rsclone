@@ -15,18 +15,25 @@
     text-align: center
 }
 
+
+
 input.invalid {
     background-color: #ffdddd;
 }
 
 .reg-tab {
     display: none;
-    padding: 10px;
+    padding: 20px;
 }
 
 .reg-tab-title {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.reg-tab-subtitle {
+    text-align: center;
+
 }
 
 .reg-control-block {
@@ -63,20 +70,34 @@ input.invalid {
 }
 
 .cat-icon {
-    width: 20px;
-    height: 20px;
-    background-color: royalblue;
+    width: 30px;
+    height: 30px;
     margin-right: 10px;
+    border-radius: 50px;
 }
 
 .category-item {
-    border: 2px solid #757575;
-    padding-left: 1rem;
+    vertical-align: middle;
+    padding: 5px 0 5px 10px;
     margin-bottom: 0.5rem;
-    background-color: rgba(243, 243, 243, 0.5);
+    background-color: rgba($color: #757575, $alpha: 0.2);
 }
 
+label {
+    margin: 0;
+    padding: 0;
+}
+
+#income-link:active {
+    color: #000;
+}
 
 #income-link, #expenses-link {
     cursor: pointer;
+    text-decoration: none;
+    color: #000;
+}
+
+#income-link.active, #expenses-link.active{
+    border-bottom: 3px solid #696969;
 }

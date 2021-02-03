@@ -10,7 +10,7 @@ export default function renderCategoriesSelectModule(incomeCategoriesArr, expens
 
     const heading = document.createElement("h2");  //
     heading.classList.add("centered");            //
-    heading.textContent = "Choose categories";   //     ЗАГОЛОВОК
+    heading.textContent = isSameName ? "Choose category" : "Choose categories";   //     ЗАГОЛОВОК
     mainWrapper.appendChild(heading);           //
 
     const wrapper = document.createElement("div");  
@@ -26,7 +26,8 @@ export default function renderCategoriesSelectModule(incomeCategoriesArr, expens
     row1.appendChild(col1);
 
     const toggleLink1 = document.createElement("a");      
-    toggleLink1.id = "income-link";                   // ПЕРЕКЛЮЧАТЕЛЬ МЕЖДУ ТИПАМИ КАТЕГОРИЙ (INCOME)
+    toggleLink1.id = "income-link";
+    toggleLink1.classList.add("active");                   // ПЕРЕКЛЮЧАТЕЛЬ МЕЖДУ ТИПАМИ КАТЕГОРИЙ (INCOME)
     toggleLink1.textContent = "INCOME";                                         
     col1.appendChild(toggleLink1);
     toggleLink1.addEventListener("click", function(){ 
@@ -56,12 +57,13 @@ export default function renderCategoriesSelectModule(incomeCategoriesArr, expens
     row2.appendChild(incomeCatWrapper);
     
 
+
     for(let i = 0; i < incomeCategoriesArr.length; i++) {
         let catItem;
         if(isSameName) {
-           catItem = createCategoryEl(incomeCategoriesArr[i], "operation", typeInput, (i+1));
+           catItem = createCategoryEl(incomeCategoriesArr[i], "operation", typeInput, i);
         } else {                                                                                        // В ЭТОМ ЦИКЛЕ ПРОХОДИМСЯ ПО МАССИВАМ С КАТЕГОРИЯМИ ДОХОДОВ, ПЕРЕДАННЫМ В АРГУМЕНТАХ
-            catItem = createCategoryEl(incomeCategoriesArr[i], "income", typeInput, (i+1));             // НА КАЖДОЙ ИТЕРАЦИИ ВЫЗЫВАЕМ ФУНКЦИЮ createCategoryEl
+            catItem = createCategoryEl(incomeCategoriesArr[i], "income", typeInput, i);             // НА КАЖДОЙ ИТЕРАЦИИ ВЫЗЫВАЕМ ФУНКЦИЮ createCategoryEl
         }                                                                                               // РЕЗУЛЬТАТ ФУНКЦИИ createCategoryEl ДОБАВЛЯЕМ В КОНТЕЙНЕР
        incomeCatWrapper.appendChild(catItem);
     }
@@ -87,6 +89,18 @@ export default function renderCategoriesSelectModule(incomeCategoriesArr, expens
 // ФУНКЦИЯ, КОТОРАЯ ГЕНЕРИТ ЭЛЕМЕНТ С КАТЕГОРИЕЙ
 // ЭЛЕМЕНТ ВКЛЮЧАЕТ В СЕБЯ ОБЕРТКУ, ИНПУТ, ИКОНКУ И НАДПИСЬ
 function createCategoryEl(catName, catType, inputType, ind) {
+    const colorsArr = [
+        "#4682B4",
+        "#FF4500",
+        "#8A2BE2",
+        "#778899",
+        "#FF7F50",
+        "#B8860B",
+        "#BDB76B",
+        "#8FBC8F",
+        "#B0C4DE",
+        "#87CEFA"
+    ];
     const category = document.createElement("div");
     category.classList.add("category-item");
 
@@ -94,6 +108,7 @@ function createCategoryEl(catName, catType, inputType, ind) {
     input.setAttribute("type", inputType);
     input.setAttribute("name", `${catType}-cat`);
     input.setAttribute("value", catName);
+
     if(inputType === "checkbox") input.checked = true;
     input.classList.add("cat-input");
     category.appendChild(input);
@@ -106,6 +121,7 @@ function createCategoryEl(catName, catType, inputType, ind) {
     const ico = new Image();
     ico.src = `assets/images/${catName}_icon.svg`;
     ico.classList.add("cat-icon");
+    ico.style.backgroundColor = colorsArr[ind];
     label.appendChild(ico);
 
     const catTitle = document.createElement("span");
@@ -115,15 +131,22 @@ function createCategoryEl(catName, catType, inputType, ind) {
     return category;
 }
 
+
 // ФУНКЦИЯ - ПЕРЕКЛЮЧАТЕЛЬ КАТЕГОРИЙ
 function toggleNewOperCategories(operationType) {
     const incomeCat = document.querySelector("#income-cat");
     const expensesCat = document.querySelector("#expenses-cat");
+    const incomeLink = document.querySelector("#income-link");
+    const expensesLink = document.querySelector("#expenses-link");
     if (operationType === "expenses") {
         incomeCat.style.display = "none";
+        incomeLink.classList.remove("active");
         expensesCat.style.display = "block";
+        expensesLink.classList.add("active");
     } else if (operationType === "income") {
         expensesCat.style.display = "none";
+        expensesLink.classList.remove("active");
         incomeCat.style.display = "block";
+        incomeLink.classList.add("active");
     }
 }
