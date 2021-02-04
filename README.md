@@ -1,1 +1,1 @@
-There will be instruction
+Инструкция на YouTube - https://youtu.be/hfyC8VWTcIs
