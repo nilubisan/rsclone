@@ -1,0 +1,103 @@
+.reg-main {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.reg-window {
+    background-color: #ffc107;
+    width: 400px;
+    border-radius: 5px;
+}
+
+.centered {
+    text-align: center
+}
+
+
+
+input.invalid {
+    background-color: #ffdddd;
+}
+
+.reg-tab {
+    display: none;
+    padding: 20px;
+}
+
+.reg-tab-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.reg-tab-subtitle {
+    text-align: center;
+
+}
+
+.reg-control-block {
+    padding: 10px;
+}
+
+.reg-steps {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#reg-currency-select {
+    margin-left: 5px;
+    height: 100%;
+}
+
+.reg-step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #000;
+    border: none;
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.reg-step.active {
+    opacity: 1;
+}
+
+.step.finish {
+    background-color: #4CAF50;
+}
+
+.cat-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    border-radius: 50px;
+}
+
+.category-item {
+    vertical-align: middle;
+    padding: 5px 0 5px 10px;
+    margin-bottom: 0.5rem;
+    background-color: rgba($color: #757575, $alpha: 0.2);
+}
+
+label {
+    margin: 0;
+    padding: 0;
+}
+
+#income-link:active {
+    color: #000;
+}
+
+#income-link, #expenses-link {
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+}
+
+#income-link.active, #expenses-link.active{
+    border-bottom: 3px solid #696969;
+}

@@ -1,0 +1,12 @@
+$font-size: 18px;
+$font-color: red;
+$backgr-color: #000;
+
+html {
+    font-size: $font-size;
+    color: $font-color;
+    body {
+        background-color: $backgr-color;
+    }
+}
+
